@@ -106,31 +106,3 @@ No installation needed! Just a modern web browser.
 |---|---|---|
 | Admin | admin@busgo.com | admin123 |
 | User | Register via the Sign Up form | — |
-
----
-
-## 📍 Popular Routes Covered
-
-- Mumbai → Pune
-- Delhi → Jaipur
-- Bangalore → Chennai
-- Hyderabad → Bangalore
-
----
-
-## 📞 Contact
-
-**BusGo Team**
-- 📍 Navrangpura, Ahmedabad, India
-- 📧 support@busgo.com
-- 📱 +91 97140 29854
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-> Made with ❤️ in Ahmedabad, India
