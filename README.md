@@ -4,12 +4,6 @@
 
 ---
 
-## 📌 About The Project
-
-**BusGo** is a fully front-end bus ticket booking web application built with HTML, CSS, Bootstrap 5, and vanilla JavaScript. It simulates a real-world bus booking experience with separate portals for users and administrators, using `localStorage` for client-side data persistence.
-
----
-
 ## ✨ Features
 
 ### 👤 User Side
