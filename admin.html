@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BusGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <!-- Sidebar -->
+    <div class="sidebar admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i class="fas fa-bus-alt me-2"></i>
+                <span>BusGo</span>
+            </a>
+            <button class="sidebar-toggle d-lg-none" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar admin-avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="user-info">
+                <h6 class="mb-0">Administrator</h6>
+                <small class="text-muted">Super Admin</small>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#users" onclick="showSection('users')">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#routes" onclick="showSection('routes')">
+                        <i class="fas fa-route"></i>
+                        <span>All Routes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#buses" onclick="showSection('buses')">
+                        <i class="fas fa-bus"></i>
+                        <span>All Buses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#bookings" onclick="showSection('bookings')">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>All Bookings</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="btn btn-outline-danger btn-sm w-100">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <nav class="dashboard-navbar admin-navbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link d-lg-none me-2" onclick="toggleSidebar()">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <h5 class="mb-0" id="pageTitle">Admin Dashboard</h5>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+
+                <span class="badge bg-danger">Admin Mode</span>
+            </div>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section active" id="dashboardSection">
+            <div class="container-fluid">
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card gradient-primary animate-fade-in">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="statTotalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card gradient-success animate-fade-in" style="animation-delay: 0.1s;">
+                            <div class="stat-icon">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="statTotalBuses">0</h3>
+                                <p>Total Buses</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card gradient-warning animate-fade-in" style="animation-delay: 0.2s;">
+                            <div class="stat-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="statTotalRoutes">0</h3>
+                                <p>Total Routes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card gradient-danger animate-fade-in" style="animation-delay: 0.3s;">
+                            <div class="stat-icon">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="statTotalBookings">0</h3>
+                                <p>Total Bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Row -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card quick-stat-card shadow-sm text-center p-3">
+                            <i class="fas fa-ticket-alt fa-2x text-primary mb-2"></i>
+                            <h4 id="quickTotalBookings">0</h4>
+                            <small class="text-muted">Total Bookings</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card quick-stat-card shadow-sm text-center p-3">
+                            <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                            <h4 id="quickTodayBookings">0</h4>
+                            <small class="text-muted">Today's Bookings</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card quick-stat-card shadow-sm text-center p-3">
+                            <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                            <h4 id="quickCancellations">0</h4>
+                            <small class="text-muted">Cancellations Today</small>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="dashboard-section" id="usersSection">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-users me-2"></i>All Users</h5>
+
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Joined</th>
+                                        <th>Bookings</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Routes Section -->
+        <div class="dashboard-section" id="routesSection">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-route me-2"></i>All Routes</h5>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRouteModal">
+                        <i class="fas fa-plus me-2"></i>Add New Route
+                    </button>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Route ID</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Bus Name</th>
+                                        <th>Departure</th>
+                                        <th>Arrival</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allRoutesTableBody">
+                                    <!-- Routes will be loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buses Section -->
+        <div class="dashboard-section" id="busesSection">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-bus me-2"></i>All Buses</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBusModal">
+                            <i class="fas fa-plus me-2"></i>Add New Bus
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Bus ID</th>
+                                        <th>Bus Name</th>
+                                        <th>Operator</th>
+                                        <th>Type</th>
+                                        <th>Seats</th>
+    
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allBusesTableBody">
+                                    <!-- Buses will be loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings Section -->
+        <div class="dashboard-section" id="bookingsSection">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-ticket-alt me-2"></i>All Bookings</h5>
+
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>PNR</th>
+                                        <th>User</th>
+                                        <th>Route</th>
+                                        <th>Operator</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allBookingsTableBody">
+                                    <!-- Bookings loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offers Section -->
+
+
+        <!-- Revenue Section -->
+
+    </div>
+
+    <!-- Add Offer Modal (Existing) -->
+
+
+    <!-- Add Bus Modal -->
+    <div class="modal fade" id="addBusModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Bus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBusForm">
+                        <div class="mb-3">
+                            <label class="form-label">Bus Name</label>
+                            <input type="text" class="form-control" id="busName" required placeholder="e.g. RedBus Express">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Operator Name (Display)</label>
+                            <input type="text" class="form-control" id="busOperatorName" required placeholder="e.g. VRL Travels">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bus Type</label>
+                            <select class="form-select" id="busType" required>
+                                <option value="ac-sleeper">AC Sleeper</option>
+                                <option value="ac-seater">AC Seater</option>
+                                <option value="non-ac-sleeper">Non-AC Sleeper</option>
+                                <option value="non-ac-seater">Non-AC Seater</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Registration Number</label>
+                            <input type="text" class="form-control" id="busRegNo" required placeholder="MH-04-AB-1234">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Total Seats</label>
+                            <input type="number" class="form-control" id="busSeats" required val="40">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amenities</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="amenityWifi" value="wifi">
+                                        <label class="form-check-label" for="amenityWifi">WiFi</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="amenityCharging" value="charging">
+                                        <label class="form-check-label" for="amenityCharging">Charging Point</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="amenityWater" value="water">
+                                        <label class="form-check-label" for="amenityWater">Water Bottle</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="amenityBlanket" value="blanket">
+                                        <label class="form-check-label" for="amenityBlanket">Blanket</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Bus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Route Modal -->
+    <div class="modal fade" id="addRouteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Route</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addRouteForm">
+                        <div class="mb-3">
+                            <label class="form-label">Select Bus</label>
+                            <select class="form-select" id="routeBusId" required>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">From City</label>
+                                <select class="form-select" id="routeFrom" required>
+                                    <option value="">Select City</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">To City</label>
+                                <select class="form-select" id="routeTo" required>
+                                    <option value="">Select City</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Departure</label>
+                                <input type="time" class="form-control" id="routeDepTime" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Arrival</label>
+                                <input type="time" class="form-control" id="routeArrTime" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ticket Price (₹)</label>
+                            <input type="number" class="form-control" id="routePrice" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Route</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

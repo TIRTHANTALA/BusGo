@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - BusGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-bus-alt text-primary me-2"></i>
+                <span class="fw-bold text-primary">Bus</span><span class="fw-bold text-danger">Go</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="my-bookings.html"><i class="fas fa-ticket-alt me-1"></i> My
+                            Bookings</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="dropdown" id="userDropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span id="userNameDisplay">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i
+                                        class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header py-4 bg-primary text-white">
+        <div class="container">
+            <h2><i class="fas fa-ticket-alt me-2"></i>My Bookings</h2>
+            <p class="mb-0">View and manage your bus ticket bookings</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-4">
+        <div class="container">
+            <!-- Tabs -->
+            <ul class="nav nav-pills mb-4" id="bookingTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming"
+                        type="button">
+                        <i class="fas fa-calendar-check me-1"></i> Upcoming
+                        <span class="badge bg-primary ms-1" id="upcomingCount">2</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed"
+                        type="button">
+                        <i class="fas fa-check-circle me-1"></i> Completed
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled"
+                        type="button">
+                        <i class="fas fa-times-circle me-1"></i> Cancelled
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="bookingTabContent">
+                <!-- Upcoming Bookings -->
+                <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+                    <div id="upcomingBookings">
+                        <!-- Bookings loaded dynamically from localStorage -->
+                    </div>
+                </div>
+
+                <!-- Completed Bookings -->
+                <div class="tab-pane fade" id="completed" role="tabpanel">
+                    <div id="completedBookings">
+                        <!-- Completed bookings loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Cancelled Bookings -->
+                <div class="tab-pane fade" id="cancelled" role="tabpanel">
+                    <div id="cancelledBookings">
+                        <!-- Cancelled bookings loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state text-center py-5 d-none" id="emptyState">
+                <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+                <h4>No bookings found</h4>
+                <p class="text-muted">Start your journey by booking a bus ticket</p>
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>Search Buses
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- View Ticket Modal -->
+    <div class="modal fade" id="ticketModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-ticket-alt me-2"></i>E-Ticket</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="ticket-full">
+                        <div class="ticket-header-full p-3 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0"><i class="fas fa-bus-alt text-primary me-2"></i>BusGo</h5>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-success">CONFIRMED</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticket-content p-4">
+                            <div class="route-display text-center mb-4">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <h4 id="modalFrom">Mumbai</h4>
+                                        <p class="text-muted mb-0" id="modalDeparture">21:00</p>
+                                    </div>
+                                    <div class="col-2 d-flex align-items-center justify-content-center">
+                                        <div class="route-line">
+                                            <i class="fas fa-bus text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <h4 id="modalTo">Pune</h4>
+                                        <p class="text-muted mb-0" id="modalArrival">03:30</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ticket-details">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">Date</small>
+                                            <p class="fw-bold mb-0" id="modalDate">25 Dec 2024</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">PNR Number</small>
+                                            <p class="fw-bold mb-0 text-primary" id="modalPNR">BG123456789</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">Bus Operator</small>
+                                            <p class="fw-bold mb-0" id="modalBus">VRL Travels</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">Bus Type</small>
+                                            <p class="fw-bold mb-0" id="modalBusType">AC Sleeper</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">Seat Numbers</small>
+                                            <p class="fw-bold mb-0" id="modalSeats">L5, L6</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="detail-item">
+                                            <small class="text-muted">Passengers</small>
+                                            <p class="fw-bold mb-0" id="modalPassengers">2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="passenger-list">
+                                <h6 class="mb-3">Passenger Details</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Gender</th>
+                                                <th>Seat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="modalPassengerList">
+                                            <tr>
+                                                <td>John Doe</td>
+                                                <td>28</td>
+                                                <td>Male</td>
+                                                <td>L5</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jane Doe</td>
+                                                <td>26</td>
+                                                <td>Female</td>
+                                                <td>L6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="total-amount p-3 bg-light rounded mt-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Total Amount Paid</span>
+                                    <span class="fs-4 fw-bold text-primary" id="modalAmount">₹1,250</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ticket-qr text-center p-3 bg-light">
+                            <div class="qr-placeholder mb-2">
+                                <i class="fas fa-qrcode fa-4x text-dark"></i>
+                            </div>
+                            <small class="text-muted">Scan for verification</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-download me-2"></i>Download Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Cancel Booking
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this booking?</p>
+                    <div class="alert alert-warning">
+                        <strong>Cancellation Policy:</strong>
+                        <ul class="mb-0 small">
+                            <li>Before 24 hrs: 90% refund</li>
+                            <li>12-24 hrs: 50% refund</li>
+                            <li>Less than 12 hrs: No refund</li>
+                        </ul>
+                    </div>
+                    <div class="refund-estimate p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between">
+                            <span>Estimated Refund:</span>
+                            <span class="fw-bold text-success" id="estimatedRefund">₹1,125</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Booking</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmCancellation()">
+                        <i class="fas fa-times me-2"></i>Cancel Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-section mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-white-50 small mb-0">© 2026 BusGo. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/mock-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let allBookings = [];
+        let currentCancelPNR = null;
+
+        function loadBookings() {
+            if (!requireAuth()) return;
+
+            const user = getCurrentUser();
+            const storageKey = user ? `busgo_bookings_${user._id}` : 'busgo_bookings_guest';
+            allBookings = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const upcomingBookings = allBookings.filter(b => {
+                if (b.status === 'cancelled') return false;
+                const travelDate = new Date(b.travelDate);
+                return travelDate >= today;
+            });
+
+            const completedBookings = allBookings.filter(b => {
+                if (b.status === 'cancelled') return false;
+                const travelDate = new Date(b.travelDate);
+                return travelDate < today;
+            });
+
+            const cancelledBookings = allBookings.filter(b => b.status === 'cancelled');
+
+            renderBookings('upcomingBookings', upcomingBookings, 'upcoming');
+            renderBookings('completedBookings', completedBookings, 'completed');
+            renderBookings('cancelledBookings', cancelledBookings, 'cancelled');
+
+            document.getElementById('upcomingCount').textContent = upcomingBookings.length;
+
+            if (allBookings.length === 0) {
+                document.getElementById('emptyState').classList.remove('d-none');
+            } else {
+                document.getElementById('emptyState').classList.add('d-none');
+            }
+        }
+
+        function renderBookings(containerId, bookings, type) {
+            const container = document.getElementById(containerId);
+
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <p>No ${type} bookings</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookings.map((booking, index) => createBookingCard(booking, type, index)).join('');
+        }
+
+        function createBookingCard(booking, type, index) {
+            const statusBadge = type === 'cancelled' ? 'bg-danger' : (type === 'completed' ? 'bg-secondary' : 'bg-success');
+            const statusText = type === 'cancelled' ? 'CANCELLED' : (type === 'completed' ? 'COMPLETED' : 'CONFIRMED');
+            const pnrClass = type === 'cancelled' ? 'text-danger' : (type === 'completed' ? 'text-muted' : 'text-primary');
+            const amountClass = type === 'upcoming' ? 'text-primary' : 'text-muted';
+
+            const formattedDate = formatDate(booking.travelDate);
+            const seats = Array.isArray(booking.seats) ? booking.seats.join(', ') : booking.seats;
+            const passengerCount = booking.passengers ? booking.passengers.length : 1;
+
+            let actionButtons = '';
+            if (type === 'upcoming') {
+                actionButtons = `
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewTicket('${booking.pnr}')">
+                        <i class="fas fa-eye me-1"></i> View Ticket
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" onclick="cancelBooking('${booking.pnr}')">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </button>
+                `;
+            } else if (type === 'completed') {
+                actionButtons = `
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewTicket('${booking.pnr}')">
+                        <i class="fas fa-eye me-1"></i> View Ticket
+                    </button>
+                `;
+            }
+
+            let detailsSection = '';
+            if (type === 'cancelled') {
+                detailsSection = `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small class="text-muted">Refund Status</small>
+                            <p class="mb-0 text-success fw-bold">
+                                <i class="fas fa-check-circle me-1"></i> Refunded
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">Refund Amount</small>
+                            <p class="mb-0 fw-bold">₹${Math.round(booking.totalAmount * 0.8).toLocaleString()}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">Cancelled On</small>
+                            <p class="mb-0 fw-bold">${booking.cancelledOn || formattedDate}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                detailsSection = `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small class="text-muted">Bus</small>
+                            <p class="mb-0 fw-bold">${booking.busName} (${booking.busType})</p>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">Seats</small>
+                            <p class="mb-0 fw-bold">${seats}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">Passengers</small>
+                            <p class="mb-0 fw-bold">${passengerCount}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="booking-card mb-4 animate-fade-in" style="animation-delay: ${index * 0.1}s;">
+                    <div class="card shadow-sm ${type === 'cancelled' ? 'border-danger' : ''}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <span class="badge ${statusBadge} mb-2">${statusText}</span>
+                                            <h5 class="mb-1 ${type === 'cancelled' ? 'text-muted' : ''}">${booking.fromCity} → ${booking.toCity}</h5>
+                                            <p class="text-muted mb-0">
+                                                <i class="fas fa-calendar me-1"></i> ${formattedDate}
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-clock me-1"></i> ${booking.departureTime} - ${booking.arrivalTime}
+                                            </p>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted">PNR</small>
+                                            <h6 class="${pnrClass}">${booking.pnr}</h6>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="booking-details p-3 bg-light rounded">
+                                        ${detailsSection}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 d-flex flex-column justify-content-between">
+                                    <div class="text-md-end mb-3">
+                                        <small class="text-muted">${type === 'cancelled' ? 'Original Amount' : 'Amount Paid'}</small>
+                                        <h4 class="${amountClass} mb-0">${type === 'cancelled' ? '<s>' : ''}₹${booking.totalAmount.toLocaleString()}${type === 'cancelled' ? '</s>' : ''}</h4>
+                                    </div>
+                                    <div class="d-flex gap-2 justify-content-md-end">
+                                        ${actionButtons}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-IN', options);
+        }
+
+        function viewTicket(pnr) {
+            const booking = allBookings.find(b => b.pnr === pnr);
+            if (!booking) return;
+
+            document.getElementById('modalFrom').textContent = booking.fromCity;
+            document.getElementById('modalTo').textContent = booking.toCity;
+            document.getElementById('modalDeparture').textContent = booking.departureTime;
+            document.getElementById('modalArrival').textContent = booking.arrivalTime;
+            document.getElementById('modalDate').textContent = formatDate(booking.travelDate);
+            document.getElementById('modalPNR').textContent = booking.pnr;
+            document.getElementById('modalBus').textContent = booking.busName;
+            document.getElementById('modalBusType').textContent = booking.busType;
+            document.getElementById('modalSeats').textContent = Array.isArray(booking.seats) ? booking.seats.join(', ') : booking.seats;
+            document.getElementById('modalPassengers').textContent = booking.passengers ? booking.passengers.length : 1;
+            document.getElementById('modalAmount').textContent = `₹${booking.totalAmount.toLocaleString()}`;
+
+            const passengerList = document.getElementById('modalPassengerList');
+            if (booking.passengers && booking.passengers.length > 0) {
+                passengerList.innerHTML = booking.passengers.map(p => `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>${p.age}</td>
+                        <td>${p.gender}</td>
+                        <td>${p.seat}</td>
+                    </tr>
+                `).join('');
+            } else {
+                passengerList.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No passenger details</td></tr>';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('ticketModal'));
+            modal.show();
+        }
+
+        function cancelBooking(pnr) {
+            currentCancelPNR = pnr;
+            const booking = allBookings.find(b => b.pnr === pnr);
+            if (booking) {
+                const refund = Math.round(booking.totalAmount * 0.9);
+                document.getElementById('estimatedRefund').textContent = `₹${refund.toLocaleString()}`;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+            modal.show();
+        }
+
+        async function confirmCancellation() {
+            if (!currentCancelPNR) return;
+
+            // Update local user storage
+            const bookingIndex = allBookings.findIndex(b => b.pnr === currentCancelPNR);
+            if (bookingIndex !== -1) {
+                allBookings[bookingIndex].status = 'cancelled';
+                allBookings[bookingIndex].cancelledOn = formatDate(new Date());
+                const user = getCurrentUser();
+                const storageKey = user ? `busgo_bookings_${user._id}` : 'busgo_bookings_guest';
+                localStorage.setItem(storageKey, JSON.stringify(allBookings));
+            }
+
+            // Update system storage via MockAPI (releases the seats)
+            try {
+                await MockAPI.cancelBooking(currentCancelPNR);
+            } catch (e) {
+                console.error('Failed to update system bookings', e);
+            }
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('cancelModal'));
+            modal.hide();
+
+            alert('Booking cancelled successfully. Refund will be processed within 5-7 business days.');
+            currentCancelPNR = null;
+            loadBookings();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkAuth();
+            loadBookings();
+        });
+    </script>
+</body>
+
+</html>

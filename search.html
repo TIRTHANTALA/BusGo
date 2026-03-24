@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - BusGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-bus-alt text-primary me-2"></i>
+                <span class="fw-bold text-primary">Bus</span><span class="fw-bold text-danger">Go</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-bookings.html"><i class="fas fa-ticket-alt me-1"></i> My
+                            Bookings</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="dropdown" id="userDropdown" style="display: none;">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span id="userNameDisplay">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i
+                                        class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-primary" id="loginBtn" data-bs-toggle="modal"
+                        data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt me-1"></i> Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Modify Bar -->
+    <section class="modify-search-bar py-3 bg-primary">
+        <div class="container">
+            <form class="row g-2 align-items-center" id="modifySearchForm">
+                <div class="col-md-3">
+                    <select class="form-select" id="modifyFromCity">
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-light btn-sm rounded-circle" onclick="swapCities()">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="modifyToCity">
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" id="modifyDate">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="fas fa-search me-1"></i> Modify
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Route Info -->
+    <section class="route-info-bar py-2 bg-light border-bottom">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold" id="routeDisplay">Mumbai → Pune</span>
+                    <span class="text-muted ms-3" id="dateDisplay">25 Dec 2024</span>
+                </div>
+                <div>
+                    <span class="badge bg-success" id="busCount">45 Buses Found</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Filter Sidebar -->
+                <div class="col-lg-3">
+                    <div class="filter-sidebar" id="filterSidebar">
+                        <div class="filter-header d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+                            <button class="btn btn-link btn-sm text-danger p-0" onclick="clearAllFilters()">Clear
+                                All</button>
+                        </div>
+
+                        <!-- Departure Time Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-clock me-2"></i>Departure Time
+                            </h6>
+                            <div class="time-slots">
+                                <label class="time-slot-btn">
+                                    <input type="checkbox" name="departure" value="morning">
+                                    <span><i class="fas fa-sun"></i><br>Morning<br><small>6AM-12PM</small></span>
+                                </label>
+                                <label class="time-slot-btn">
+                                    <input type="checkbox" name="departure" value="afternoon">
+                                    <span><i
+                                            class="fas fa-cloud-sun"></i><br>Afternoon<br><small>12PM-6PM</small></span>
+                                </label>
+                                <label class="time-slot-btn">
+                                    <input type="checkbox" name="departure" value="evening">
+                                    <span><i class="fas fa-cloud-moon"></i><br>Evening<br><small>6PM-12AM</small></span>
+                                </label>
+                                <label class="time-slot-btn">
+                                    <input type="checkbox" name="departure" value="night">
+                                    <span><i class="fas fa-moon"></i><br>Night<br><small>12AM-6AM</small></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Range Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-rupee-sign me-2"></i>Price Range
+                            </h6>
+                            <div id="priceSlider" class="mb-3"></div>
+                            <div class="d-flex justify-content-between">
+                                <span class="small text-muted">₹<span id="minPrice">0</span></span>
+                                <span class="small text-muted">₹<span id="maxPrice">3000</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Bus Type Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-bus me-2"></i>Bus Type
+                            </h6>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="ac"
+                                    id="busTypeAC">
+                                <label class="form-check-label" for="busTypeAC">
+                                    <i class="fas fa-snowflake text-info me-1"></i> AC
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="non-ac"
+                                    id="busTypeNonAC">
+                                <label class="form-check-label" for="busTypeNonAC">
+                                    <i class="fas fa-wind text-warning me-1"></i> Non-AC
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="sleeper"
+                                    id="busTypeSleeper">
+                                <label class="form-check-label" for="busTypeSleeper">
+                                    <i class="fas fa-bed text-primary me-1"></i> Sleeper
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="seater"
+                                    id="busTypeSeater">
+                                <label class="form-check-label" for="busTypeSeater">
+                                    <i class="fas fa-chair text-success me-1"></i> Seater
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Seat Availability Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-chair me-2"></i>Seat Availability
+                            </h6>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="available"
+                                    id="seatsAvailable">
+                                <label class="form-check-label" for="seatsAvailable">
+                                    Available Seats Only
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Amenities Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-concierge-bell me-2"></i>Amenities
+                            </h6>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="wifi"
+                                    id="amenityWifi">
+                                <label class="form-check-label" for="amenityWifi">
+                                    <i class="fas fa-wifi text-primary me-1"></i> WiFi
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="charging"
+                                    id="amenityCharging">
+                                <label class="form-check-label" for="amenityCharging">
+                                    <i class="fas fa-plug text-success me-1"></i> Charging Point
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="water"
+                                    id="amenityWater">
+                                <label class="form-check-label" for="amenityWater">
+                                    <i class="fas fa-tint text-info me-1"></i> Water Bottle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" value="blanket"
+                                    id="amenityBlanket">
+                                <label class="form-check-label" for="amenityBlanket">
+                                    <i class="fas fa-blanket text-warning me-1"></i> Blanket
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Operator Filter -->
+                        <div class="filter-group mb-4">
+                            <h6 class="filter-title">
+                                <i class="fas fa-building me-2"></i>Bus Operator
+                            </h6>
+                            <div id="operatorFilters">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Filter Button -->
+                    <button class="btn btn-primary filter-toggle-btn d-lg-none" id="filterToggle">
+                        <i class="fas fa-filter me-2"></i>Filters
+                    </button>
+                </div>
+
+                <!-- Search Results -->
+                <div class="col-lg-9">
+                    <!-- Sort Bar -->
+                    <div class="sort-bar mb-3 p-3 bg-white rounded shadow-sm">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <span class="text-muted">Sort by:</span>
+                                <div class="btn-group ms-2" role="group">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm sort-btn active"
+                                        data-sort="price-low">
+                                        <i class="fas fa-rupee-sign"></i> Price ↑
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm sort-btn"
+                                        data-sort="price-high">
+                                        <i class="fas fa-rupee-sign"></i> Price ↓
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm sort-btn"
+                                        data-sort="departure">
+                                        <i class="fas fa-clock"></i> Departure
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm sort-btn"
+                                        data-sort="duration">
+                                        <i class="fas fa-hourglass-half"></i> Duration
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <span class="filter-count badge bg-primary" id="activeFilterCount">0 filters
+                                    applied</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bus Cards Container -->
+                    <div id="busResults">
+                        <!-- Loading Skeleton -->
+                        <div class="bus-card skeleton-card mb-3" id="skeletonLoader">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-button"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bus cards loaded dynamically -->
+                    </div>
+
+                    <!-- No Results -->
+                    <div class="no-results text-center py-5 d-none" id="noResults">
+                        <i class="fas fa-bus fa-3x text-muted mb-3"></i>
+                        <h5>No buses found</h5>
+                        <p class="text-muted">Try adjusting your filters or search for a different route</p>
+                        <button class="btn btn-primary" onclick="clearAllFilters()">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Filter Overlay -->
+    <div class="filter-overlay d-lg-none" id="filterOverlay"></div>
+
+    <!-- Footer -->
+    <footer class="footer-section mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-white-50 small mb-0">© 2026 BusGo. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <!-- <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title"><i class="fas fa-sign-in-alt text-primary me-2"></i>Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Login As</label>
+                            <select class="form-select" id="loginRole">
+                                <option value="user">User</option>
+                                <option value="operator">Bus Operator</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+
+    <script src="js/mock-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/search.js"></script>
+</body>
+
+</html>
